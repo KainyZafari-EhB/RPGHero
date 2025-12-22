@@ -10,7 +10,7 @@ console.log('🌱 Starting database seed...');
 // Clear existing data
 db.prepare('DELETE FROM heroes').run();
 db.prepare('DELETE FROM quests').run();
-db.prepare('DELETE FROM sqlite_sequence WHERE name="heroes" OR name="quests"').run();
+db.prepare("DELETE FROM sqlite_sequence WHERE name='heroes' OR name='quests'").run();
 
 console.log('🧹 Cleared existing data');
 
