@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Hero API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin: 30px 0 20px;
+        }
+        
+        h3 {
+            color: #444;
+            margin: 20px 0 10px;
+        }
+        
+        .endpoint-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .put { background: #fca130; color: white; }
+        .delete { background: #f93e3e; color: white; }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .param-table td:first-child {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .required {
+            color: #f93e3e;
+            font-size: 0.8em;
+        }
+        
+        .optional {
+            color: #888;
+            font-size: 0.8em;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🗡️ RPG Hero API</h1>
+        <p>A database-driven REST API for managing RPG heroes and quests</p>
+        <p><strong>Base URL:</strong> <code>http://localhost:3000</code></p>
+    </header>
+
+    <main>
+        <!-- Heroes Section -->
+        <section class="endpoint-section">
+            <h2>Heroes Endpoints</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/heroes</code></td>
+                        <td>Get all heroes with pagination and sorting</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/heroes/:id</code></td>
+                        <td>Get a specific hero by ID</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/heroes/search</code></td>
+                        <td>Search heroes by name, class, or level</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td><code>/heroes</code></td>
+                        <td>Create a new hero</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td><code>/heroes/:id</code></td>
+                        <td>Update an existing hero</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td><code>/heroes/:id</code></td>
+                        <td>Delete a hero</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Hero Object Structure</h3>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>string <span class="required">required</span></td>
+                        <td>Hero name (no numbers allowed)</td>
+                    </tr>
+                    <tr>
+                        <td>class</td>
+                        <td>string <span class="required">required</span></td>
+                        <td>One of: warrior, mage, rogue, healer</td>
+                    </tr>
+                    <tr>
+                        <td>level</td>
+                        <td>integer <span class="optional">optional</span></td>
+                        <td>Level 1-100 (default: 1)</td>
+                    </tr>
+                    <tr>
+                        <td>health</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Health points (must be positive)</td>
+                    </tr>
+                    <tr>
+                        <td>mana</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Mana points (non-negative)</td>
+                    </tr>
+                    <tr>
+                        <td>strength</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Strength stat (non-negative)</td>
+                    </tr>
+                    <tr>
+                        <td>intelligence</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Intelligence stat (non-negative)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example: Create Hero</h3>
+            <pre><code>POST /heroes
+Content-Type: application/json
+
+{
+    "name": "Thorin Oakenshield",
+    "class": "warrior",
+    "level": 25,
+    "health": 150,
+    "mana": 30,
+    "strength": 80,
+    "intelligence": 20
+}</code></pre>
+        </section>
+
+        <!-- Quests Section -->
+        <section class="endpoint-section">
+            <h2>Quests Endpoints</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/quests</code></td>
+                        <td>Get all quests with pagination and sorting</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/quests/:id</code></td>
+                        <td>Get a specific quest by ID</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td><code>/quests/search</code></td>
+                        <td>Search quests by title, difficulty, or reward</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td><code>/quests</code></td>
+                        <td>Create a new quest</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td><code>/quests/:id</code></td>
+                        <td>Update an existing quest</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td><code>/quests/:id</code></td>
+                        <td>Delete a quest</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Quest Object Structure</h3>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>title</td>
+                        <td>string <span class="required">required</span></td>
+                        <td>Quest title</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>string <span class="required">required</span></td>
+                        <td>Quest description</td>
+                    </tr>
+                    <tr>
+                        <td>difficulty</td>
+                        <td>string <span class="required">required</span></td>
+                        <td>One of: easy, medium, hard, legendary</td>
+                    </tr>
+                    <tr>
+                        <td>reward_gold</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Gold reward (non-negative)</td>
+                    </tr>
+                    <tr>
+                        <td>reward_xp</td>
+                        <td>integer <span class="required">required</span></td>
+                        <td>Experience points reward (non-negative)</td>
+                    </tr>
+                    <tr>
+                        <td>min_level</td>
+                        <td>integer <span class="optional">optional</span></td>
+                        <td>Minimum hero level (1-100, default: 1)</td>
+                    </tr>
+                    <tr>
+                        <td>start_date</td>
+                        <td>date <span class="optional">optional</span></td>
+                        <td>Quest start date (YYYY-MM-DD)</td>
+                    </tr>
+                    <tr>
+                        <td>end_date</td>
+                        <td>date <span class="optional">optional</span></td>
+                        <td>Quest end date (must be after start_date)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example: Create Quest</h3>
+            <pre><code>POST /quests
+Content-Type: application/json
+
+{
+    "title": "Defeat the Dragon",
+    "description": "Slay the ancient dragon terrorizing the village",
+    "difficulty": "legendary",
+    "reward_gold": 5000,
+    "reward_xp": 2500,
+    "min_level": 50,
+    "start_date": "2024-01-01",
+    "end_date": "2024-12-31"
+}</code></pre>
+        </section>
+
+        <!-- Query Parameters Section -->
+        <section class="endpoint-section">
+            <h2>Query Parameters</h2>
+            
+            <h3>Pagination</h3>
+            <table class="param-table">
+                <tbody>
+                    <tr>
+                        <td>limit</td>
+                        <td>Number of results to return (default: 10)</td>
+                    </tr>
+                    <tr>
+                        <td>offset</td>
+                        <td>Number of results to skip (default: 0)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Example:</strong> <code>GET /heroes?limit=5&offset=10</code></p>
+
+            <h3>Sorting</h3>
+            <table class="param-table">
+                <tbody>
+                    <tr>
+                        <td>sort</td>
+                        <td>Field to sort by (e.g., name, level, created_at)</td>
+                    </tr>
+                    <tr>
+                        <td>order</td>
+                        <td>Sort order: asc or desc (default: asc)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Example:</strong> <code>GET /heroes?sort=level&order=desc</code></p>
+
+            <h3>Search Parameters</h3>
+            <h4>Heroes Search (<code>/heroes/search</code>)</h4>
+            <table class="param-table">
+                <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>Search by hero name (partial match)</td>
+                    </tr>
+                    <tr>
+                        <td>class</td>
+                        <td>Filter by class (warrior, mage, rogue, healer)</td>
+                    </tr>
+                    <tr>
+                        <td>minLevel</td>
+                        <td>Filter by minimum level</td>
+                    </tr>
+                    <tr>
+                        <td>maxLevel</td>
+                        <td>Filter by maximum level</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Example:</strong> <code>GET /heroes/search?class=warrior&minLevel=10</code></p>
+
+            <h4>Quests Search (<code>/quests/search</code>)</h4>
+            <table class="param-table">
+                <tbody>
+                    <tr>
+                        <td>title</td>
+                        <td>Search by quest title (partial match)</td>
+                    </tr>
+                    <tr>
+                        <td>difficulty</td>
+                        <td>Filter by difficulty level</td>
+                    </tr>
+                    <tr>
+                        <td>minReward</td>
+                        <td>Filter by minimum gold reward</td>
+                    </tr>
+                    <tr>
+                        <td>activeOnly</td>
+                        <td>Set to "true" to show only active quests</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Example:</strong> <code>GET /quests/search?difficulty=hard&activeOnly=true</code></p>
+        </section>
+
+        <!-- Error Responses Section -->
+        <section class="endpoint-section">
+            <h2>Error Responses</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status Code</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>400</code></td>
+                        <td>Bad Request - Validation error</td>
+                    </tr>
+                    <tr>
+                        <td><code>404</code></td>
+                        <td>Not Found - Resource doesn't exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>429</code></td>
+                        <td>Too Many Requests - Rate limit exceeded</td>
+                    </tr>
+                    <tr>
+                        <td><code>500</code></td>
+                        <td>Internal Server Error</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Error Response Format</h3>
+            <pre><code>{
+    "success": false,
+    "error": "Validation failed",
+    "details": [
+        {
+            "field": "name",
+            "message": "Name is required"
+        }
+    ]
+}</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>RPG Hero API &copy; 2024 | Built with Node.js and Express</p>
+    </footer>
+</body>
+</html>
