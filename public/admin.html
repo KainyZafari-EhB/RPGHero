@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Hero - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #008cff;
+            --bg: #f5f6f7;
+            --surface: #ffffff;
+            --text: #2b3b4c;
+            --border: #e4e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+        }
+
+        .item-meta {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .badge-warrior {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-mage {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-rogue {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-healer {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Admin Dashboard</h1>
+            <a href="/" class="btn btn-secondary">← Back to Docs</a>
+        </header>
+
+        <div class="grid">
+            <!-- Heroes Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Heroes Management</h2>
+                    <button class="btn btn-primary" onclick="loadHeroes()">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <!-- Create Hero Form -->
+                    <form id="createHeroForm" onsubmit="createHero(event)">
+                        <h3>Create New Hero</h3>
+                        <div class="form-row">
+                            <input type="text" name="name" placeholder="Name" required>
+                            <select name="class" required>
+                                <option value="" disabled selected>Select Class</option>
+                                <option value="warrior">Warrior</option>
+                                <option value="mage">Mage</option>
+                                <option value="rogue">Rogue</option>
+                                <option value="healer">Healer</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="health" placeholder="Health" value="100" required>
+                            <input type="number" name="mana" placeholder="Mana" value="50" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="strength" placeholder="Strength" value="10" required>
+                            <input type="number" name="intelligence" placeholder="Intelligence" value="10" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Hero</button>
+                    </form>
+
+                    <!-- Heroes List -->
+                    <div id="heroesList" class="list-container">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quests Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quests Management</h2>
+                    <button class="btn btn-primary" onclick="loadQuests()">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <!-- Create Quest Form -->
+                    <form id="createQuestForm" onsubmit="createQuest(event)">
+                        <h3>Create New Quest</h3>
+                        <input type="text" name="title" placeholder="Quest Title" required>
+                        <input type="text" name="description" placeholder="Description" required>
+                        <div class="form-row">
+                            <select name="difficulty" required>
+                                <option value="" disabled selected>Difficulty</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="legendary">Legendary</option>
+                            </select>
+                            <input type="number" name="min_level" placeholder="Min Level" value="1">
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="reward_gold" placeholder="Gold Reward" value="100">
+                            <input type="number" name="reward_xp" placeholder="XP Reward" value="50">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Quest</button>
+                    </form>
+
+                    <!-- Quests List -->
+                    <div id="questsList" class="list-container">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // Load data on start
+        window.addEventListener('DOMContentLoaded', () => {
+            loadHeroes();
+            loadQuests();
+        });
+
+        // --- Heroes Logic ---
+        async function loadHeroes() {
+            const list = document.getElementById('heroesList');
+            try {
+                const res = await fetch(`${API_URL}/heroes`);
+                const json = await res.json();
+
+                list.innerHTML = json.data.map(hero => `
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-title">
+                                ${hero.name} 
+                                <span class="badge badge-${hero.class}">${hero.class}</span>
+                            </div>
+                            <div class="item-meta">Lvl ${hero.level} • HP ${hero.health} • MP ${hero.mana}</div>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteHero('${hero.id}')">Delete</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = '<div style="color:red">Failed to load heroes</div>';
+            }
+        }
+
+        async function createHero(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            // Convert strings to numbers
+            ['health', 'mana', 'strength', 'intelligence'].forEach(k => data[k] = Number(data[k]));
+
+            try {
+                const res = await fetch(`${API_URL}/heroes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    form.reset();
+                    loadHeroes();
+                } else {
+                    const error = await res.json();
+                    alert('Error: ' + JSON.stringify(error.details || error.error));
+                }
+            } catch (err) {
+                alert('Connection failed');
+            }
+        }
+
+        async function deleteHero(id) {
+            if (!confirm('Are you sure you want to delete this hero?')) return;
+            await fetch(`${API_URL}/heroes/${id}`, { method: 'DELETE' });
+            loadHeroes();
+        }
+
+        // --- Quests Logic ---
+        async function loadQuests() {
+            const list = document.getElementById('questsList');
+            try {
+                const res = await fetch(`${API_URL}/quests`);
+                const json = await res.json();
+
+                list.innerHTML = json.data.map(quest => `
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-title">${quest.title}</div>
+                            <div class="item-meta">${quest.difficulty} • ${quest.reward_gold}g</div>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteQuest('${quest.id}')">Delete</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = '<div style="color:red">Failed to load quests</div>';
+            }
+        }
+
+        async function createQuest(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            ['reward_gold', 'reward_xp', 'min_level'].forEach(k => data[k] = Number(data[k]));
+
+            try {
+                const res = await fetch(`${API_URL}/quests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    form.reset();
+                    loadQuests();
+                } else {
+                    const error = await res.json();
+                    alert('Error: ' + JSON.stringify(error.details || error.error));
+                }
+            } catch (err) {
+                alert('Connection failed');
+            }
+        }
+
+        async function deleteQuest(id) {
+            if (!confirm('Are you sure you want to delete this quest?')) return;
+            await fetch(`${API_URL}/quests/${id}`, { method: 'DELETE' });
+            loadQuests();
+        }
+    </script>
+</body>
+
+</html>
