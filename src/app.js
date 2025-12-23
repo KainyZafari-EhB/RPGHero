@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 // Import routes
 const heroRoutes = require('./routes/heroRoutes');
 const questRoutes = require('./routes/questRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 // Initialize Express app
 const app = express();
@@ -33,6 +34,7 @@ const limiter = rateLimit({
 });
 app.use('/heroes', limiter);
 app.use('/quests', limiter);
+app.use('/items', limiter);
 
 // Serve static files for documentation
 app.use(express.static(path.join(__dirname, '../public')));
@@ -40,6 +42,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // API Routes
 app.use('/heroes', heroRoutes);
 app.use('/quests', questRoutes);
+app.use('/items', itemRoutes);
 
 // Root route - serve documentation page
 app.get('/', (req, res) => {

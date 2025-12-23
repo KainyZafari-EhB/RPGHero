@@ -10,7 +10,8 @@ console.log('🌱 Starting database seed...');
 // Clear existing data
 db.prepare('DELETE FROM heroes').run();
 db.prepare('DELETE FROM quests').run();
-db.prepare("DELETE FROM sqlite_sequence WHERE name='heroes' OR name='quests'").run();
+db.prepare('DELETE FROM items').run();
+db.prepare("DELETE FROM sqlite_sequence WHERE name='heroes' OR name='quests' OR name='items'").run();
 
 console.log('🧹 Cleared existing data');
 
@@ -73,6 +74,61 @@ for (const hero of heroes) {
 }
 
 console.log(`✅ Seeded ${heroes.length} heroes`);
+
+// Seed Items
+const items = [
+    {
+        name: 'Iron Sword',
+        type: 'weapon',
+        damage: 15,
+        weight: 5,
+        rarity: 'common',
+        hero_id: 1 // Aragorn
+    },
+    {
+        name: 'Healing Potion',
+        type: 'consumable',
+        damage: 0,
+        weight: 1,
+        rarity: 'common',
+        hero_id: 1 // Aragorn
+    },
+    {
+        name: 'Staff of Light',
+        type: 'weapon',
+        damage: 40,
+        weight: 8,
+        rarity: 'epic',
+        hero_id: 2 // Gandalf
+    },
+    {
+        name: 'Elven Bow',
+        type: 'weapon',
+        damage: 25,
+        weight: 3,
+        rarity: 'rare',
+        hero_id: 3 // Legolas
+    },
+    {
+        name: 'Mithril Mail',
+        type: 'armor',
+        damage: 0,
+        weight: 2,
+        rarity: 'legendary',
+        hero_id: null // Unassigned
+    }
+];
+
+const insertItem = db.prepare(`
+    INSERT INTO items (name, type, damage, weight, rarity, hero_id)
+    VALUES (@name, @type, @damage, @weight, @rarity, @hero_id)
+`);
+
+for (const item of items) {
+    insertItem.run(item);
+}
+
+console.log(`✅ Seeded ${items.length} items`);
 
 // Seed Quests
 const quests = [

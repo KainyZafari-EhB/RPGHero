@@ -26,6 +26,10 @@ Thumbs.db
 *.swp
 *.swo
 
+
 # Build output
 dist/
 build/
+
+# Verification Scripts
+verify_*.js

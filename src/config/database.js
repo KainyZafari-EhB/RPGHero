@@ -35,6 +35,22 @@ function initializeDatabase() {
         )
     `);
 
+    // Create Items table
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            type TEXT NOT NULL,
+            damage INTEGER DEFAULT 0,
+            weight INTEGER NOT NULL CHECK(weight >= 0),
+            rarity TEXT NOT NULL CHECK(rarity IN ('common', 'rare', 'epic', 'legendary')),
+            hero_id INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (hero_id) REFERENCES heroes (id) ON DELETE SET NULL
+        )
+    `);
+
     // Create Quests table
     db.exec(`
         CREATE TABLE IF NOT EXISTS quests (

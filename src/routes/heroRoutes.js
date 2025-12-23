@@ -18,5 +18,9 @@ router.post('/', validateHeroCreate, heroController.createHero);
 router.put('/:id', validateHeroUpdate, heroController.updateHero);
 router.delete('/:id', heroController.deleteHero);
 
+// Inventory routes
+router.get('/:id/inventory', heroController.getHeroInventory);
+router.post('/:id/inventory', heroController.addItemToInventory);
+
 module.exports = router;
 

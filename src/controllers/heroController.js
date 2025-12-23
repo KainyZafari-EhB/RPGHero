@@ -4,6 +4,7 @@
  */
 
 const Hero = require('../models/Hero');
+const Item = require('../models/Item');
 
 /**
  * Get all heroes with pagination and sorting
@@ -173,6 +174,120 @@ exports.deleteHero = (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to delete hero',
+            message: error.message
+        });
+    }
+};
+
+/**
+ * Get hero's inventory
+ * GET /heroes/:id/inventory
+ */
+exports.getHeroInventory = (req, res) => {
+    try {
+        const hero = Hero.findById(req.params.id);
+        if (!hero) {
+            return res.status(404).json({
+                success: false,
+                error: 'Hero not found'
+            });
+        }
+
+        const items = Item.findByHeroId(req.params.id);
+
+        res.json({
+            success: true,
+            data: items,
+            count: items.length
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch inventory',
+            message: error.message
+        });
+    }
+};
+
+/**
+ * Add item to hero's inventory
+ * POST /heroes/:id/inventory
+ */
+exports.addItemToInventory = (req, res) => {
+    try {
+        const heroId = parseInt(req.params.id);
+        const hero = Hero.findById(heroId);
+
+        if (!hero) {
+            return res.status(404).json({
+                success: false,
+                error: 'Hero not found'
+            });
+        }
+
+        // Calculate max carry capacity (Bonus requirement)
+        // Rule: Max Weight = Strength * 5
+        const maxCapacity = hero.strength * 5;
+
+        // Get current inventory usage
+        const currentItems = Item.findByHeroId(heroId);
+        const currentWeight = currentItems.reduce((total, item) => total + item.weight, 0);
+
+        // Check if we are adding an existing item or creating a new one
+        const { itemId, name, type, damage, weight, rarity } = req.body;
+        let itemToAddWeight = 0;
+        let itemToUpdateId = null;
+
+        if (itemId) {
+            const existingItem = Item.findById(itemId);
+            if (!existingItem) {
+                return res.status(404).json({ success: false, error: 'Item not found' });
+            }
+            itemToAddWeight = existingItem.weight;
+            itemToUpdateId = itemId;
+        } else {
+            // New item creation
+            if (weight === undefined) {
+                return res.status(400).json({ success: false, error: 'Weight is required for new items' });
+            }
+            itemToAddWeight = parseInt(weight);
+        }
+
+        // Check capacity
+        if (currentWeight + itemToAddWeight > maxCapacity) {
+            return res.status(400).json({
+                success: false,
+                error: 'Inventory full',
+                message: `Cannot carry item. Max capacity: ${maxCapacity}, Current: ${currentWeight}, Item: ${itemToAddWeight}`
+            });
+        }
+
+        let resultItem;
+        if (itemToUpdateId) {
+            // Assign existing item
+            resultItem = Item.update(itemToUpdateId, { hero_id: heroId });
+        } else {
+            // Create new item assigned to hero
+            resultItem = Item.create({
+                name,
+                type,
+                damage,
+                weight: itemToAddWeight,
+                rarity,
+                hero_id: heroId
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Item added to inventory',
+            data: resultItem
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to add item',
             message: error.message
         });
     }
