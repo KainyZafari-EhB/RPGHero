@@ -274,6 +274,80 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Items Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Items Management</h2>
+                    <button class="btn btn-primary" onclick="loadItems()">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <!-- Create Item Form -->
+                    <form id="createItemForm" onsubmit="createItem(event)">
+                        <h3>Create New Item</h3>
+                        <div class="form-row">
+                            <input type="text" name="name" placeholder="Item Name" required>
+                            <input type="text" name="type" placeholder="Type (e.g. weapon)" required>
+                        </div>
+                        <div class="form-row">
+                            <select name="rarity" required>
+                                <option value="" disabled selected>Rarity</option>
+                                <option value="common">Common</option>
+                                <option value="rare">Rare</option>
+                                <option value="epic">Epic</option>
+                                <option value="legendary">Legendary</option>
+                            </select>
+                            <input type="number" name="weight" placeholder="Weight" value="1" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="damage" placeholder="Damage" value="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Item</button>
+                    </form>
+
+                    <!-- Items List -->
+                    <div id="itemsList" class="list-container">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Items Management</h2>
+                    <button class="btn btn-primary" onclick="loadItems()">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <!-- Create Item Form -->
+                    <form id="createItemForm" onsubmit="createItem(event)">
+                        <h3>Create New Item</h3>
+                        <div class="form-row">
+                            <input type="text" name="name" placeholder="Item Name" required>
+                            <input type="text" name="type" placeholder="Type (e.g. weapon)" required>
+                        </div>
+                        <div class="form-row">
+                            <select name="rarity" required>
+                                <option value="" disabled selected>Rarity</option>
+                                <option value="common">Common</option>
+                                <option value="rare">Rare</option>
+                                <option value="epic">Epic</option>
+                                <option value="legendary">Legendary</option>
+                            </select>
+                            <input type="number" name="weight" placeholder="Weight" value="1" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="damage" placeholder="Damage" value="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Item</button>
+                    </form>
+
+                    <!-- Items List -->
+                    <div id="itemsList" class="list-container">
+                        Loading...
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -284,6 +358,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadHeroes();
             loadQuests();
+            loadItems();
         });
 
         // --- Heroes Logic ---
@@ -394,6 +469,59 @@
             if (!confirm('Are you sure you want to delete this quest?')) return;
             await fetch(`${API_URL}/quests/${id}`, { method: 'DELETE' });
             loadQuests();
+        }
+
+        // --- Items Logic ---
+        async function loadItems() {
+            const list = document.getElementById('itemsList');
+            try {
+                const res = await fetch(`${API_URL}/items`);
+                const json = await res.json();
+
+                list.innerHTML = json.data.map(item => `
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-title">${item.name} <span class="badge" style="background:#eee">${item.rarity}</span></div>
+                            <div class="item-meta">${item.type} • W:${item.weight} • Dmg:${item.damage}</div>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteItem('${item.id}')">Delete</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = '<div style="color:red">Failed to load items</div>';
+            }
+        }
+
+        async function createItem(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            ['weight', 'damage'].forEach(k => data[k] = Number(data[k]));
+
+            try {
+                const res = await fetch(`${API_URL}/items`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    form.reset();
+                    loadItems();
+                } else {
+                    const error = await res.json();
+                    alert('Error: ' + JSON.stringify(error.details || error.error));
+                }
+            } catch (err) {
+                alert('Connection failed');
+            }
+        }
+
+        async function deleteItem(id) {
+            if (!confirm('Are you sure you want to delete this item?')) return;
+            await fetch(`${API_URL}/items/${id}`, { method: 'DELETE' });
+            loadItems();
         }
     </script>
 </body>
