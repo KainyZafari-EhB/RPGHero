@@ -443,6 +443,23 @@
         "intelligence": 95
     }'</span></code></pre>
             </div>
+
+            <!-- Hero Inventory -->
+            <h3 id="hero-inventory">Get Hero Inventory</h3>
+            <p>Get items owned by a specific hero.</p>
+
+            <div class="endpoint-badge">
+                <span class="method get">GET</span>
+                <span class="path">/heroes/:id/inventory</span>
+            </div>
+
+            <h3 id="add-inventory">Add Item to Inventory</h3>
+            <p>Add a new or existing item to a hero's inventory. Enforces weight capacity limits (Strength * 5).</p>
+
+            <div class="endpoint-badge">
+                <span class="method post">POST</span>
+                <span class="path">/heroes/:id/inventory</span>
+            </div>
         </section>
 
         <!-- Quests Resource -->
