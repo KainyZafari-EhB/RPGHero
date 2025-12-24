@@ -91,7 +91,5 @@ Manage your data with a user-friendly interface:
 - [Better-SQLite3 Documentation](https://github.com/WiseLibs/better-sqlite3)
 - [MDN Web Docs](https://developer.mozilla.org/)
 - [Twilio API Docs](https://www.twilio.com/docs/usage/api) (Inspiration for documentation style)
+- AI: Gemini, Claude Sonnet 4.5, ChatGPT
 
-## 📄 License
-
-This project is licensed under the ISC License.
